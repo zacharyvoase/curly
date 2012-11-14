@@ -87,7 +87,7 @@ class CurlError(Exception):
     def __init__(self, returncode):
         super(CurlError, self).__init__()
         self.errno = returncode
-        self.message = self.messages[self.returncode]
+        self.message = self.messages[self.errno]
 
     def __repr__(self):
         return 'CurlError(%d)' % (self.errno,)
