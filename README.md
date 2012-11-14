@@ -2,6 +2,8 @@
 
 Use the [curl][] command line from Python with minimal fuss.
 
+  [curl]: http://curl.haxx.se
+
     >>> import curly
     >>> response = curly.curl('http://news.ycombinator.com/')
     >>> response.status
