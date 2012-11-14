@@ -13,8 +13,27 @@ Use the [curl][] command line from Python with minimal fuss.
     >>> response.read(6)
     '<html>'
 
+A bit more complex (form POST with authentication):
 
-Install it with:
+    >>> res = curly.curl('https://api.stripe.com/v1/charges',
+    ...     '-u', 'vtUQeOtUnYr7PGCLQ96Ul4zqpDUO4sOE:',
+    ...     '-d', 'amount=400',
+    ...     '-d', 'currency=usd',
+    ...     '-d', 'description=Charge for test@example.com',
+    ...     '-d', 'card[number]=4242424242424242',
+    ...     '-d', 'card[exp_month]=12',
+    ...     '-d', 'card[exp_year]=2012',
+    ...     '-d', 'card[cvc]=123')
+
+Streaming multipart file upload:
+
+    >>> res = curly.curl('https://api.example.com/v1/savefile',
+    ...     '-u', 'username:password',
+    ...     '-F', 'bucket=foobar',
+    ...     '-F', 'file=@/path/to/some/file')
+
+
+## Installation
 
     pip install curly
 
