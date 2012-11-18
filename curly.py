@@ -1,5 +1,6 @@
 import httplib
 import subprocess
+import os
 import sys
 
 
@@ -98,12 +99,13 @@ class CurlError(Exception):
 
 def curl(*args):
     """Execute curl, returning an `httplib.HTTPResponse`."""
-    command = 'curl -s -i'.split() + list(args)
+    command = 'curl -sNi'.split() + list(args)
     pipe = subprocess.Popen(command, stdin=None, stdout=subprocess.PIPE,
                             stderr=sys.stderr)
     class mock_socket(object):
         def makefile(self, *args, **kwargs):
-            return pipe.stdout
+            return os.fdopen(pipe.stdout.fileno(), *args, **kwargs)
+
     response = httplib.HTTPResponse(mock_socket())
     try:
         response.begin()
@@ -111,4 +113,11 @@ def curl(*args):
         retcode = pipe.poll()
         if retcode not in (None, 0):
             raise CurlError(retcode)
+
+    # There's a problem wherein curl doesn't print the chunk length prefixes,
+    # instead transparently turning the chunks into a continuous stream.
+    # httplib.HTTPResponse, however, is expecting them. So we set `chunked` to
+    # False so it doesn't raise errors when reading the stream.
+    response.chunked = False
+
     return response
