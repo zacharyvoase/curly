@@ -104,7 +104,7 @@ def curl(*args):
                             stderr=sys.stderr)
     class mock_socket(object):
         def makefile(self, *args, **kwargs):
-            return os.fdopen(pipe.stdout.fileno(), *args, **kwargs)
+            return os.fdopen(os.dup(pipe.stdout.fileno()), *args, **kwargs)
 
     response = httplib.HTTPResponse(mock_socket())
     try:
